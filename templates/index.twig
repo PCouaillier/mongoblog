@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>mongoBlog</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"/>
+    <style>
+        body {
+            background-color: #333333;
+            color: #5c84f2;
+        }
+    </style>
+    {% if debugBar %}
+        {{ debugBar.renderHead()|raw }}
+    {% endif %}
+</head>
+<body>
+
+<h1>mongoBlog</h1>
+
+<div>
+    {% for article in articles %}
+        <article>
+            <header>
+                <span class="article-name">{{ article.name }}</span><br/>
+                <span class="article-author">{{ article.author }}</span>&nbsp;<span class="article-publishDate">{{ article.publishDate|date('H:i:s d-m-Y') }}</span>
+            </header>
+            <div>
+                <pre>{{ article.content }}</pre>
+            </div>
+            <div>
+                {% for comment in article.comments %}
+                    <div>
+                        <div><span>{{ comment.author }}</span><span>{{ comment.publishDate|date('H:i:s d-m-Y') }}</span></div>
+                        <div><pre>{{ comment.content }}</pre></div>
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+    {% else %}
+        <div>no articles</div>
+    {% endfor %}
+</div>
+{{ debugBar.render()|raw }}
+</body>
+</html>
