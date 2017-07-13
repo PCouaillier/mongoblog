@@ -2,13 +2,17 @@
 
 namespace MongoBlog\DataAccess;
 
+use MongoBlog\DataAccess\Entities\Comment;
 use MongoDB\BSON\ObjectID;
 use \MongoDB\Client;
 use \MongoBlog\DataAccess\Entities\Post;
 
 final class MongoInteraction
 {
+    /** @var \MongoDB\Database $db */
     private $db;
+
+    /** @var PostActions $post */
     private $post;
 
     public function __construct(string $server, string $dbName)
@@ -17,27 +21,43 @@ final class MongoInteraction
         $this->post = new PostActions($this->db);
     }
 
+    /**
+     * @param Post $post
+     */
     public function addPost(Post $post)
     {
         $this->post->addPost($post);
     }
 
-
+    /**
+     * @param $tag
+     * @return PostIterator
+     */
     public function fetchPostByTag($tag): PostIterator
     {
         return $this->post->fetchPostByTag($tag);
     }
 
+    /**
+     * @return PostIterator
+     */
     public function fetchPost(): PostIterator
     {
         return $this->post->fetchPost();
     }
 
-    public static function toObjectId(string $id)
+    /**
+     * @param string $id
+     * @return ObjectID
+     */
+    public static function toObjectId(string $id): ObjectID
     {
         return new ObjectId($id);
     }
 
+    /**
+     * @param array $array
+     */
     public static function cleanId(array &$array)
     {
         if (isset($array['_id'])) {
@@ -49,11 +69,20 @@ final class MongoInteraction
         }
     }
 
+    /**
+     * @param $key
+     * @param $classNameLength
+     * @return bool|string
+     */
     public static function parseKey($key, $classNameLength)
     {
         return ($key[0]==="\0" ? \substr($key, $classNameLength) : $key);
     }
 
+    /**
+     * @param $obj
+     * @return array
+     */
     public static function object_to_array($obj): array
     {
         $isObj = \is_object($obj);
@@ -80,5 +109,13 @@ final class MongoInteraction
 
         }
         return $arr;
+    }
+
+    /**
+     * @param string $postId
+     * @param Comment $comment
+     */
+    public function addComment(string $postId, Comment $comment) {
+        $this->post->addComment($postId, $comment);
     }
 }

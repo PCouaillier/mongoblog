@@ -5,6 +5,10 @@ namespace MongoBlog\Middleware;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+/**
+ * Class AdminSecurity
+ * @package MongoBlog\Middleware
+ */
 final class AdminSecurity
 {
 
@@ -28,14 +32,14 @@ final class AdminSecurity
     /**
      *  User\Rights[admin]
      */
-    public static function demoteAdmin()
+    public function demoteAdmin()
     {
         $session[self::STORE_NAME] = false;
     }
 
-    private static function isAdmin()
+    private function isAdmin()
     {
-        return (bool)$session[self::STORE_NAME];
+        return (bool)($this->session[self::STORE_NAME]);
     }
 
     private static function setRefusedPage(Response $response)
@@ -59,8 +63,8 @@ final class AdminSecurity
      */
     public function __invoke(Request $request,Response $response, $next)
     {
-        $isAdmin = self::isAdmin();
+        $isAdmin = $this->isAdmin();
         $request->withAttribute('isAdmin', $isAdmin);
-        return ($isAdmin)? $next($request, $response) : self::setRefusedPage($response);
+        return ($isAdmin)? $next($request, $response) : $this->setRefusedPage($response);
     }
 }

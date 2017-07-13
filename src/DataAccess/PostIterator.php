@@ -5,21 +5,36 @@ namespace MongoBlog\DataAccess;
 use \MongoBlog\DataAccess\Entities\Post;
 use \MongoBlog\DataAccess\Entities\Comment;
 
+/**
+ * Class PostIterator
+ * @package MongoBlog\DataAccess
+ */
 final class PostIterator implements \Iterator
 {
+    /** @var \IteratorIterator $posts */
     private $posts;
 
+    /**
+     * PostIterator constructor.
+     * @param $posts
+     */
     function __construct($posts)
     {
         $this->posts = new \IteratorIterator($posts);
         $this->posts->rewind();
     }
 
+    /**
+     *
+     */
     function rewind()
     {
         $this->posts->rewind();
     }
 
+    /**
+     * @return Post
+     */
     function current(): Post
     {
         return self::convert($this->posts->current());

@@ -2,39 +2,54 @@
 namespace MongoBlog\Pages;
 
 use \DebugBar\DebugBar;
+use MongoBlog\DataAccess\MongoInteraction;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Slim\Container;
+use Slim\Views\Twig;
 
 /**
- *
+ * Class HomePage
+ * @package MongoBlog\Pages
  */
 final class HomePage
 {
-  private $container;
+    /** @var DebugBar $debugBar */
+    private $debugBar;
 
-  function __construct(Container $container)
-  {
-    $this->container = $container;
-  }
+    /** @var MongoInteraction $mongo*/
+    private $mongo;
 
-  /**
-   * @param Request $request
-   * @param Response $response
-   * @return Response
-   */
-  function __invoke(Request $request, Response $response): Response
-  {
-    /** @var $debugBar DebugBar */
-    $debugBar = $this->container->get('debugBar');
-    try {
-      $articles = $this->container->get('mongo')->fetchPost();
-    }
-    catch(\Exception $e)
+    /** @var Twig $view*/
+    private $view;
+
+
+    /**
+     * HomePage constructor.
+     * @param Container $container
+     */
+    function __construct(Container $container)
     {
-      /** @noinspection PhpUndefinedMethodInspection */
-      $debugBar->getCollector('exceptions')->addException($e);
+        $this->debugBar = $container->get('debugBar');
+        $this->mongo = $container->get('mongo');
+        $this->view = $container->get('view');
     }
-    return $this->container->get('view')->render($response, 'index.twig', ['articles'=>$articles??[],'debugBar'=>$debugBar->getJavascriptRenderer()]);
-  }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    function __invoke(Request $request, Response $response): Response
+    {
+        try {
+            $articles = $this->mongo->fetchPost();
+        }
+        catch(\Exception $e)
+        {
+            /** @noinspection PhpUndefinedMethodInspection */
+            $this->debugBar->getCollector('exceptions')->addException($e);
+        }
+        return $this->view->render($response, 'index.twig', ['articles'=>$articles??[],'debugBar'=>$this->debugBar->getJavascriptRenderer()]);
+    }
 }

@@ -7,20 +7,26 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use \MongoBlog\Middleware\AdminSecurity;
 
 /**
- *
+ * Class ConnectPage
+ * @package MongoBlog\Pages
  */
 final class ConnectPage
 {
-  function __invoke(Request $request, Response $response): Response
-  {
-    $body = $request->getParsedBody();
-    $username = trim($body->get('username'));
-    $password = trim($body->get('password'));
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    function __invoke(Request $request, Response $response): Response
+    {
+        $body = $request->getParsedBody();
+        $username = trim($body->get('username'));
+        $password = trim($body->get('password'));
 
-    if ($username === 'root' && $password === 'root') {
-      (new AdminSecurity($_SESSION))->promoteAdmin();
-      return $response->withStatus(204);
+        if ($username === 'root' && $password === 'root') {
+            (new AdminSecurity($_SESSION))->promoteAdmin();
+            return $response->withStatus(204);
+        }
+        return $response->withStatus(403);
     }
-    return $response->withStatus(403);
-  }
 }

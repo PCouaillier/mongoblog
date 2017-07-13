@@ -1,16 +1,33 @@
 <?php
 namespace MongoBlog\DataAccess\Entities;
+
 /**
- *
+ * Class Comment
+ * @package MongoBlog\DataAccess\Entities
  */
 final class Comment
 {
+    /**@var string */
     private $id;
+
+    /**@var string */
     private $author;
+
+    /**@var \DateTime */
     private $publishDate;
+
+    /**@var string */
     public $content;
 
-    public function __construct($id, $author, $publishDate, $content)
+    /**
+     * Comment constructor.
+     * @param string $id
+     * @param string $author
+     * @param \DateTime $publishDate
+     * @param string $content
+     * @throws \Exception
+     */
+    public function __construct(string $id, string $author, \DateTime $publishDate, string $content)
     {
         if($author === null || $publishDate === null || $content === null)
         {
@@ -22,21 +39,35 @@ final class Comment
         $this->content = $content;
     }
 
-    public static function publish($author, $content): self
+    /**
+     * @param $author
+     * @param $content
+     * @return Comment
+     */
+    public static function publish(string $author, string $content): self
     {
         return new Comment(null, $author, new \DateTime(), $content);
     }
 
-    public function id()
+    /**
+     * @return string
+     */
+    public function id(): string
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function author(): string
     {
         return $this->author;
     }
 
+    /**
+     * @return \DateTime
+     */
     public function publishDate(): \DateTime
     {
         return $this->publishDate;

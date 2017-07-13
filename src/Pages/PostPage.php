@@ -9,7 +9,8 @@ use \Slim\Http\Request;
 use \Slim\Http\Response;
 
 /**
- *
+ * Class PostPage
+ * @package MongoBlog\Pages
  */
 final class PostPage
 {
@@ -18,7 +19,7 @@ final class PostPage
 
     /**
      * PostPage constructor.
-     * @param App $app
+     * @param Container $container
      * @internal param MongoInteraction $mongo
      */
     function __construct(Container $container)
@@ -45,7 +46,8 @@ final class PostPage
     {
         $author = $request->getParam('user');
         $content = $request->getParam('content');
-        if (!$request || !$response) return $response->withStatus(400);
+
+        if (!$author || !$content) return $response->withStatus(400);
 
         $keywords = self::parseKeywords($request->getParam('keywords'));
         $this->mongo->addPost(
